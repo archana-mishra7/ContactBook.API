@@ -6,9 +6,9 @@ namespace ContactBook.API.Models
     public class ContactGroups
     {
         [Key]
-        public long contactGroupID { get; set; }
-        public Contacts contact { get; set; }
-        public List<Contacts> contactGroup { get; set; }
+        public long ContactGroupID { get; set; }
+        public Contacts Contact { get; set; }
+        public ContactGroups OtherContactGroups { get; set; }
         
     }
 }
