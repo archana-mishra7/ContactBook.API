@@ -13,3 +13,4 @@ in a particular group we can create a lamda query.-- This will resolve( A contac
 for this we can add other contact group info like OtherContactGroupID and otherContactGroupName. In case a contact group just contains contacts then in that case this field can be null
 
 # What will happen in case a contact belongs to one contact group and then that contact group is added to another contact group?
+we can store both the contact group ID in the contacts table  as that contact belongs to both the contact group.
