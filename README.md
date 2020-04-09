@@ -1,16 +1,45 @@
 # ContactBook.API
 
-Here the most chellening functionality to achieve is contact group class , it has a one to many relationship with Contacts 
-and one self join.
+Design and build either a 
 
-1 to many relationship we can acheive with storing the contact group ID in contacts entity.
-For Self join ?
 
-I think we should store just the ContactGroupID and ConactGroupName in Contact group object. If we need what all contacts are there
-in a particular group we can create a lamda query.-- This will resolve( A contact group can contain zero or more contacts.)
+	
+REST APIs for a Contact Book (OR)
+	A Console Library for a Contact Book 
 
-# then what about mixed contact group  and contacts?
-for this we can add other contact group info like OtherContactGroupID and otherContactGroupName. In case a contact group just contains contacts then in that case this field can be null
 
-# What will happen in case a contact belongs to one contact group and then that contact group is added to another contact group?
-we can store both the contact group ID in the contacts table  as that contact belongs to both the contact group.
+
+Note : When “API” is mentioned below , it refers to either a REST API (OR) your library API based on what you have chosen
+
+
+# Contacts
+
+The API should support basic operations such as Create, Read, Update and Delete a contact. Each contact at the minimum should have a first name, last name and, of course a phone number!
+
+
+	
+The API should not accept duplicate contacts.
+	The API should provide a search functionality and support pagination.
+	
+
+
+# Contact Groups
+
+In addition, to contacts. The Contact Book API should also provide support for creating and managing Contact Groups. 
+
+
+	
+A contact group can contain zero or more contacts.
+	A contact group can contain other contact groups.
+	A contact group can contain a mix of contacts and contact groups.
+
+
+The API should support basic operations such as Create, Read, Update, and Delete for a Contact Group. The API should also support managing the Contact Group, like adding a Contact / Contact Group to the Contact Group, deleting a Contact / Contact Group from a Contact Group, search for a Contact / Contact Group in a Contact Group, etc. The Contact Group at the minimum should contain a name.
+
+
+	
+The API should not accept duplicate contact groups. 
+	The API should not accept – an add operation when a user is already a member of the contact group.
+	The API should provide a search functionality and support pagination.
+
+deduplication on name or phone number
