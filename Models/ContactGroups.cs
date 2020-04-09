@@ -8,7 +8,7 @@ namespace ContactBook.API.Models
         [Key]
         public long ContactGroupID { get; set; }
         public string ContactGroupName { get; set; }
-        public ContactGroups OtherContactGroups { get; set; }
+        public long OtherContactGroupID { get; set; }
         public string OtherContactGroupName { get; set; }
         
     }
