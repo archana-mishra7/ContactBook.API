@@ -12,6 +12,6 @@ namespace ContactBook.API.Models
         [Required]
         [DataType(DataType.PhoneNumber)]
         public string PhoneNumber { get; set; }
-        public long? contactGroupID { get; set; }
+        public string? contactGroupID { get; set; }
     }
 }

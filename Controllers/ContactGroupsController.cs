@@ -19,48 +19,47 @@ namespace ContactBook.API.Controllers
 
         }
 
+        public async Task<bool> DuplicateCheckonPhone(string newPhoneNumber){
+             var phoneCheck = await _context.Contacts.FirstOrDefaultAsync(
+                x => x.PhoneNumber == newPhoneNumber);
+            
+            if(phoneCheck != null)
+            return true;   //409 is statuscode for duplicate entry    
+            
+            return true;
+        }
+
         [HttpGet]
         public async Task<IActionResult> ListAllContacts()
         {
             var contactGroupList = await _context.ContactGroups.ToListAsync();
            return Ok(contactGroupList);
         }
-        [HttpPost("addcontacttoGroup")]
-        public async Task<IActionResult> AddContactToGroup(Contacts contact)
+        //for adding contact to an existing group
+        [HttpPut("{id}")]
+        public async Task<IActionResult> AddContactToGroup(long ContactGroupID ,Contacts contact)
         {
-            var dbContactList = await _context.Contacts.ToListAsync(); 
-            var phoneNumber = contact.PhoneNumber;
-            var phoneCheck =  dbContactList.Find(
-                            x => x.PhoneNumber == phoneNumber);
-            if (phoneCheck != null)
-             return StatusCode(409);   //409 is statuscode for duplicate entry  
+            if(DuplicateCheckonPhone(contact.PhoneNumber).Result)
+             return StatusCode(409);   //409 is statuscode for duplicate entry 
             
-            ContactGroups contactGroup = new ContactGroups();
-            contactGroup.ContactGroupID = ContactGroupID + 1;
-            contactGroup.Contact = contact;
-            
-            //adding to contacts table as well
+            //adding to contacts table 
             var contactWGroupID = new Contacts();
             contactWGroupID = contact;
-            contactWGroupID.contactGroupID = contactGroup.ContactGroupID;
+            if(string.IsNullOrEmpty(contact.contactGroupID))
+            contactWGroupID.contactGroupID = ContactGroupID.ToString();
+            else
+             contactWGroupID.contactGroupID = contactWGroupID.contactGroupID + " , " + ContactGroupID.ToString();
+            
             _context.Contacts.Add(contactWGroupID);
-
-
-            _context.ContactGroups.Add(contactGroup)  ;
             await _context.SaveChangesAsync();
            
-            return CreatedAtAction(nameof(contactGroup), contactGroup);
+            return StatusCode(201);
         }
 
-        [HttpPost("addcontactgroup")]
+        //adding a contactgroup to an existing group -- work in progress
+        [HttpPost("addcontactgroup")] 
         public async Task<ActionResult<ContactGroups>> AddContactGroup(ContactGroups contactGroup)
         {
-            var phoneNumber = contactGroup.Contact.PhoneNumber;
-            var phoneCheck = await _context.Contacts.FirstOrDefaultAsync(
-                x => x.PhoneNumber == phoneNumber);
-
-            if(phoneCheck != null)
-            return StatusCode(409);   //409 is statuscode for duplicate entry          
             
             contactGroup.ContactGroupID = ContactGroupID +1;
             _context.ContactGroups.Add(contactGroup);
@@ -68,46 +67,15 @@ namespace ContactBook.API.Controllers
             return StatusCode(201);
         }
 
-        [HttpPost("addcontactlisttogroup")]
-        public async Task<ActionResult<ContactGroups>> AddContactListToGroup(List<Contacts> contactList)
+        //Create new Contact Group -- Work in progress.
+        [HttpPost("newcontactgroup")]
+        public async Task<ActionResult<ContactGroups>> CreateNewContactGroup(ContactGroups contactGroups)
         {
-            try
-            {
-                var dbContactList = await _context.Contacts.ToListAsync();
-
-                if (contactList.Count < 0)
-                    return StatusCode(404);
-
-                //var ContactGroupsList = new List<ContactGroups>();
-                foreach (var contact in contactList)
-                {
-                    var phoneNumber = contact.PhoneNumber;
-                    var phoneCheck = dbContactList.Find(
-                        x => x.PhoneNumber == phoneNumber);
-                    if (phoneCheck != null)
-                        return StatusCode(409);   //409 is statuscode for duplicate entry  
-
-                    ContactGroups contactGroup = new ContactGroups();
-                    contactGroup.ContactGroupID = ContactGroupID + 1;
-                    contactGroup.Contact = contact;
-                    //adding to contacts table as well
-                    var contactWGroupID = new Contacts();
-                    contactWGroupID = contact;
-                    contactWGroupID.contactGroupID = contactGroup.ContactGroupID;
-                    _context.Contacts.Add(contactWGroupID);
-                   // ContactGroupsList.Add(contactGroup);
-                    _context.ContactGroups.Add(contactGroup);
-
-                }
-                 
+           
                 await _context.SaveChangesAsync();
                  return StatusCode(201);
-            }
-            catch(Exception ex)
-            {
-                var message = ex.Message;
-                return StatusCode(500);
-            }
+            
+            
         }
 
     }
